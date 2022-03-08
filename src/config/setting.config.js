@@ -13,7 +13,7 @@ const setting = {
   // 进行编译的依赖
   transpileDependencies: [],
   //标题 （包括初次加载雪花屏的标题 页面的标题 浏览器的标题）
-  title: 'vue-admin-better',
+  title: '卡百利业务中台',
   //简写
   abbreviation: 'vab',
   //开发环境端口号
@@ -23,7 +23,7 @@ const setting = {
   //这一项非常重要！请务必保留MIT协议下package.json及copyright作者信息 即可免费商用，不遵守此项约定你将无法使用该框架，如需自定义版权信息请联系QQ1204505056
   copyright: 'vab',
   //是否显示页面底部自定义版权信息
-  footerCopyright: true,
+  footerCopyright: false,
   //是否显示顶部进度条
   progressBar: true,
   //缓存路由的最大数量
@@ -37,7 +37,7 @@ const setting = {
   //token名称
   tokenName: 'accessToken',
   //token在localStorage、sessionStorage存储的key的名称
-  tokenTableName: 'vue-admin-beautiful-2021',
+  tokenTableName: 'kabel-token',
   //token存储位置localStorage sessionStorage
   storage: 'localStorage',
   //token失效回退到登录页时是否记录本次的路由
@@ -49,7 +49,7 @@ const setting = {
   //是否开启登录拦截
   loginInterception: true,
   //是否开启登录RSA加密
-  loginRSA: true,
+  loginRSA: false,
   //intelligence和all两种方式，前者后端权限只控制permissions不控制view文件的import（前后端配合，减轻后端工作量），all方式完全交给后端前端只负责加载
   authentication: 'intelligence',
   //vertical布局时是否只保持一个子菜单的展开
@@ -65,6 +65,6 @@ const setting = {
   //代码生成机生成在view下的文件夹名称
   templateFolder: 'project',
   //是否显示终端donation打印
-  donation: true,
+  donation: false,
 }
 module.exports = setting

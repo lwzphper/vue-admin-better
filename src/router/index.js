@@ -53,6 +53,23 @@ export const asyncRoutes = [
       },
     ],
   },
+  {
+    path: '/clue',
+    component: Layout,
+    redirect: 'noRedirect',
+    children: [
+      {
+        path: 'import',
+        name: 'Import',
+        component: () => import('@/views/import/index'),
+        meta: {
+          title: '线索导入',
+          icon: 'file-import',
+          permissions: ['admin'],
+        },
+      },
+    ],
+  },
   /* {
     path: "/test",
     component: Layout,
@@ -303,7 +320,7 @@ export const asyncRoutes = [
       },
     ],
   },
-  {
+  /* {
     path: '/mall',
     component: Layout,
     redirect: 'noRedirect',
@@ -334,8 +351,8 @@ export const asyncRoutes = [
         },
       },
     ],
-  },
-  {
+  }, */
+  /* {
     path: '/error',
     component: EmptyLayout,
     redirect: 'noRedirect',
@@ -355,7 +372,7 @@ export const asyncRoutes = [
         meta: { title: '404' },
       },
     ],
-  },
+  }, */
   {
     path: '*',
     redirect: '/404',

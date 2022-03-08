@@ -7,8 +7,8 @@ const theme = {
   //横纵布局 horizontal vertical
   layout: 'vertical',
   //是否开启主题配置按钮
-  themeBar: true,
+  themeBar: false,
   //是否显示多标签页
-  tabsBar: true,
+  tabsBar: false,
 }
 module.exports = theme

@@ -2,20 +2,20 @@
   <el-dropdown @command="handleCommand">
     <span class="avatar-dropdown">
       <!--<el-avatar class="user-avatar" :src="avatar"></el-avatar>-->
-      <img class="user-avatar" :src="avatar" alt="" />
+      <!-- <img class="user-avatar" :src="avatar" alt="" /> -->
       <div class="user-name">
         {{ username }}
-        <i class="el-icon-arrow-down el-icon--right"></i>
+        <!-- <i class="el-icon-arrow-down el-icon--right"></i> -->
       </div>
     </span>
 
-    <el-dropdown-menu slot="dropdown">
+    <!-- <el-dropdown-menu slot="dropdown">
       <el-dropdown-item command="github">github地址</el-dropdown-item>
       <el-dropdown-item command="gitee" divided>码云地址</el-dropdown-item>
       <el-dropdown-item command="pro" divided>pro付费版地址</el-dropdown-item>
       <el-dropdown-item command="plus" divided>plus付费版地址</el-dropdown-item>
       <el-dropdown-item command="logout" divided>退出登录</el-dropdown-item>
-    </el-dropdown-menu>
+    </el-dropdown-menu> -->
   </el-dropdown>
 </template>
 
