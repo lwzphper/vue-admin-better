@@ -39,8 +39,8 @@ export const asyncRoutes = [
   {
     path: '/',
     component: Layout,
-    redirect: '/index',
-    children: [
+    redirect: '/clue/import',
+    /* children: [
       {
         path: 'index',
         name: 'Index',
@@ -51,7 +51,7 @@ export const asyncRoutes = [
           affix: true,
         },
       },
-    ],
+    ], */
   },
   {
     path: '/clue',
@@ -88,7 +88,7 @@ export const asyncRoutes = [
     ],
   }, */
 
-  {
+  /* {
     path: '/vab',
     component: Layout,
     redirect: 'noRedirect',
@@ -319,7 +319,7 @@ export const asyncRoutes = [
         meta: { title: '菜单管理', badge: 'New' },
       },
     ],
-  },
+  }, */
   /* {
     path: '/mall',
     component: Layout,

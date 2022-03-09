@@ -1,35 +1,29 @@
 <template>
   <div class="userManagement-container">
-    <vab-upload
-      ref="vabUpload"
-      url="/upload"
-      name="file"
-      :limit="50"
-      :size="2"
-    ></vab-upload>
     <vab-query-form>
-      <vab-query-form-left-panel :span="12">
-        <el-button
-          icon="el-icon-plus"
-          type="primary"
-          @click="handleUpload({ key: 'value' })"
-        >
-          添加
-        </el-button>
-      </vab-query-form-left-panel>
-      <vab-query-form-right-panel :span="12">
+      <vab-query-form-right-panel :span="24">
         <el-form :inline="true" :model="queryForm" @submit.native.prevent>
           <el-form-item>
-            <el-input
-              v-model.trim="queryForm.username"
-              placeholder="请输入用户名"
-              clearable
-            />
+            <el-button
+              icon="el-icon-download"
+              type="success"
+              @click="handleDownTpl"
+            >
+              下载模板
+            </el-button>
           </el-form-item>
           <el-form-item>
-            <el-button icon="el-icon-search" type="primary" @click="queryData">
-              查询
-            </el-button>
+            <el-upload
+              class="upload-demo"
+              action=""
+              :show-file-list="false"
+              :auto-upload="true"
+              :http-request="handleUpload"
+            >
+              <el-button icon="el-icon-upload" size="small" type="primary">
+                点击上传
+              </el-button>
+            </el-upload>
           </el-form-item>
         </el-form>
       </vab-query-form-right-panel>
@@ -41,7 +35,6 @@
       :element-loading-text="elementLoadingText"
       @selection-change="setSelectRows"
     >
-      <el-table-column show-overflow-tooltip type="selection"></el-table-column>
       <el-table-column
         show-overflow-tooltip
         prop="id"
@@ -86,13 +79,12 @@
 </template>
 
 <script>
-  import { getList, doDelete } from '@/api/userManagement'
   import Edit from './components/ClueImportEdit'
-  import VabUpload from '@/components/VabUpload'
+  import { getPreviewList, importPreview } from '@/api/clue'
 
   export default {
     name: 'ClueImport',
-    components: { Edit, VabUpload },
+    components: { Edit },
     data() {
       return {
         list: null,
@@ -102,9 +94,8 @@
         selectRows: '',
         elementLoadingText: '正在加载...',
         queryForm: {
-          pageNo: 1,
-          pageSize: 10,
-          username: '',
+          page: 1,
+          size: 10,
         },
       }
     },
@@ -115,29 +106,20 @@
       setSelectRows(val) {
         this.selectRows = val
       },
-      handleUpload(data) {
-        this.$refs['vabUpload'].handleShow(data)
+      handleUpload(param) {
+        // 上传
+        let formData = new FormData()
+        formData.append('file', param.file)
+        importPreview(formData).then((res) => {
+          this.fetchData()
+        })
       },
-      handleDelete(row) {
-        if (row.id) {
-          this.$baseConfirm('你确定要删除当前项吗', null, async () => {
-            const { msg } = await doDelete({ ids: row.id })
-            this.$baseMessage(msg, 'success')
-            this.fetchData()
-          })
-        } else {
-          if (this.selectRows.length > 0) {
-            const ids = this.selectRows.map((item) => item.id).join()
-            this.$baseConfirm('你确定要删除选中项吗', null, async () => {
-              const { msg } = await doDelete({ ids })
-              this.$baseMessage(msg, 'success')
-              this.fetchData()
-            })
-          } else {
-            this.$baseMessage('未选中任何行', 'error')
-            return false
-          }
-        }
+      handleDownTpl() {
+        const a = document.createElement('a')
+        a.setAttribute('download', '导入模板.xlsx')
+        a.setAttribute('target', '_blank')
+        a.setAttribute('href', 'xxxxx')
+        a.click()
       },
       handleSizeChange(val) {
         this.queryForm.pageSize = val
@@ -153,7 +135,7 @@
       },
       async fetchData() {
         this.listLoading = true
-        const { data, totalCount } = await getList(this.queryForm)
+        const { data, totalCount } = await getPreviewList(this.queryForm)
         this.list = data
         this.total = totalCount
         setTimeout(() => {

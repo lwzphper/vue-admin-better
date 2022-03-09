@@ -92,8 +92,8 @@ instance.interceptors.response.use(
     } else {
       handleCode(code, msg)
       return Promise.reject(
-        'vue-admin-beautiful请求异常拦截:' +
-          JSON.stringify({ url: config.url, code, msg }) || 'Error'
+        '请求异常拦截:' + JSON.stringify({ url: config.url, code, msg }) ||
+          'Error'
       )
     }
   },
@@ -112,7 +112,7 @@ instance.interceptors.response.use(
       if (message.includes('timeout')) {
         message = '后端接口请求超时'
       }
-      if (message.includes('Request failed with status code')) {
+      if (message.includes('请求失败')) {
         const code = message.substr(message.length - 3)
         message = '后端接口' + code + '异常'
       }
