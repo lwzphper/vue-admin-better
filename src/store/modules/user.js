@@ -11,7 +11,7 @@ import {
   setAccessToken,
 } from '@/utils/accessToken'
 import { resetRouter } from '@/router'
-import { title, tokenName } from '@/config'
+import { title, tokenName, apiResponseTokenName } from '@/config'
 
 const state = () => ({
   accessToken: getAccessToken(),
@@ -46,7 +46,7 @@ const actions = {
   },
   async login({ commit }, userInfo) {
     const { data } = await login(userInfo)
-    const accessToken = data[tokenName]
+    const accessToken = data[apiResponseTokenName]
     if (accessToken) {
       commit('setAccessToken', accessToken)
       const hour = new Date().getHours()
@@ -63,7 +63,7 @@ const actions = {
       Vue.prototype.$baseNotify(`欢迎登录${title}`, `${thisTime}！`)
     } else {
       Vue.prototype.$baseMessage(
-        `登录接口异常，未正确返回${tokenName}...`,
+        `登录接口异常，未正确返回${apiResponseTokenName}...`,
         'error'
       )
     }

@@ -19,7 +19,7 @@
               <vab-icon :icon="['fas', 'user']" />
             </span>
             <el-input
-              v-model.trim="form.username"
+              v-model.trim="form.account"
               v-focus
               placeholder="请输入用户名"
               tabindex="1"
@@ -98,8 +98,9 @@
         nodeEnv: process.env.NODE_ENV,
         title: this.$baseTitle,
         form: {
-          username: '',
+          account: '',
           password: '',
+          type: 1,
         },
         rules: {
           username: [

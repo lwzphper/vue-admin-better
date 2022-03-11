@@ -36,6 +36,8 @@ const setting = {
   loadingText: '正在加载中...',
   //token名称
   tokenName: 'Authorization',
+  //接口返回的token字段
+  apiResponseTokenName: 'token',
   //token在localStorage、sessionStorage存储的key的名称
   tokenTableName: 'kabel-token',
   //token存储位置localStorage sessionStorage
