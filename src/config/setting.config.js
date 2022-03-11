@@ -40,6 +40,8 @@ const setting = {
   apiResponseTokenName: 'token',
   //token在localStorage、sessionStorage存储的key的名称
   tokenTableName: 'kabel-token',
+  //用户信息在localStorage、sessionStorage存储的key的名称
+  userTableName: 'user-info',
   //token存储位置localStorage sessionStorage
   storage: 'localStorage',
   //token失效回退到登录页时是否记录本次的路由

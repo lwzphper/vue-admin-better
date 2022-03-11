@@ -80,7 +80,7 @@
 
 <script>
   import Edit from './components/ClueImportEdit'
-  import { getPreviewList, importPreview } from '@/api/clue'
+  import { getImportPreviewList, uploadImportExcel } from '@/api/clue'
 
   export default {
     name: 'ClueImport',
@@ -88,7 +88,7 @@
     data() {
       return {
         list: null,
-        listLoading: true,
+        listLoading: false,
         layout: 'total, sizes, prev, pager, next, jumper',
         total: 0,
         selectRows: '',
@@ -96,11 +96,12 @@
         queryForm: {
           page: 1,
           size: 10,
+          file_path: '',
         },
       }
     },
     created() {
-      this.fetchData()
+      // this.fetchData()
     },
     methods: {
       setSelectRows(val) {
@@ -109,16 +110,21 @@
       handleUpload(param) {
         // 上传
         let formData = new FormData()
-        formData.append('file', param.file)
-        importPreview(formData).then((res) => {
+        formData.append('excel_file', param.file)
+        uploadImportExcel(formData).then((res) => {
+          // 设置文件路径
+          this.queryForm.file_path = res.file_path
           this.fetchData()
         })
       },
       handleDownTpl() {
         const a = document.createElement('a')
         a.setAttribute('download', '导入模板.xlsx')
-        a.setAttribute('target', '_blank')
-        a.setAttribute('href', 'xxxxx')
+        // a.setAttribute('target', '_blank')
+        a.setAttribute(
+          'href',
+          'https://cdn-oss.kabel.work/clue/20220311/0b4a5c6e-9523-41b9-b557-88aed1e897f0.xlsx'
+        )
         a.click()
       },
       handleSizeChange(val) {
@@ -135,9 +141,9 @@
       },
       async fetchData() {
         this.listLoading = true
-        const { data, totalCount } = await getPreviewList(this.queryForm)
-        this.list = data
-        this.total = totalCount
+        const { list, count } = await getPreviewList(this.queryForm)
+        this.list = list
+        this.total = count
         setTimeout(() => {
           this.listLoading = false
         }, 300)
