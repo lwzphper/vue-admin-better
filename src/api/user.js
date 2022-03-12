@@ -13,20 +13,42 @@ export async function login(data) {
   })
 }
 
-export function getUserInfo(accessToken) {
+export function logout() {
   return request({
-    url: '/userInfo',
-    method: 'post',
-    data: {
-      [tokenName]: accessToken,
-    },
+    url: '/account/user/auth/logout',
+    method: 'get',
   })
 }
 
-export function logout() {
+/**
+ * 获取用户列表
+ * @param {JSON} params
+ *    size
+ *    page
+ *    search_val: 关键词搜索（手机号，用户名，昵称）
+ *    status: 状态：1在职（默认） 2离职
+ *    department_id: 部门ID
+ * @returns
+ */
+export function getUserPageList(params) {
   return request({
-    url: '/logout',
-    method: 'post',
+    url: '/account/user/index/list',
+    method: 'get',
+    params,
+  })
+}
+
+/**
+ * 获取部门列表
+ * @param {JSON} params
+ *    search_val：关键词搜索
+ * @returns
+ */
+export function getDepartmentList(params) {
+  return request({
+    url: '/account/user/department/list',
+    method: 'get',
+    params,
   })
 }
 

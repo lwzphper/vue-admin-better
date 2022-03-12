@@ -10,6 +10,7 @@ import {
   removeAccessToken,
   setAccessToken,
 } from '@/utils/accessToken'
+import { removeUserInfo } from '@/utils/userInfo'
 import { resetRouter } from '@/router'
 import { title, tokenName, apiResponseTokenName } from '@/config'
 import { getUserInfo, setUserInfo } from '@/utils/userInfo'
@@ -46,7 +47,7 @@ const actions = {
     commit('setPermissions', permissions)
   },
   async login({ commit }, userInfo) {
-    const { data } = await login(userInfo)
+    const data = await login(userInfo)
     const accessToken = data[apiResponseTokenName]
     if (accessToken) {
       commit('setAccessToken', accessToken)
@@ -103,6 +104,7 @@ const actions = {
     commit('setPermissions', [])
     commit('setAccessToken', '')
     removeAccessToken()
+    removeUserInfo()
   },
 }
 export default { state, getters, mutations, actions }

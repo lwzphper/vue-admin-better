@@ -50,6 +50,32 @@
       </vab-query-form-right-panel>
     </vab-query-form>
 
+    <el-dialog title="导入选项" :visible.sync="showDialog">
+      <div id="drawer-content">
+        <el-radio-group v-model="importType">
+          <el-radio :label="importPoolCode">导入到公海</el-radio>
+          <el-radio :label="importUserCode">指定人员分配</el-radio>
+          <el-radio :label="importDeptCode">平均分配给部门</el-radio>
+        </el-radio-group>
+      </div>
+      <!-- 人员列表 -->
+      <user-table
+        v-show="importType == importUserCode"
+        ref="userTable"
+      ></user-table>
+      <!-- 部门列表 -->
+      <dept-table
+        v-show="importType == importDeptCode"
+        ref="deptTable"
+      ></dept-table>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible">取 消</el-button>
+        <el-button type="primary" @click="dialogVisible = false">
+          确 定
+        </el-button>
+      </span>
+    </el-dialog>
+
     <el-table
       v-loading="listLoading"
       :data="list"
@@ -116,12 +142,12 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     ></el-pagination>
-    <edit ref="edit" @fetch-data="fetchData"></edit>
   </div>
 </template>
 
 <script>
-  import Edit from './components/ClueImportEdit'
+  import UserTable from './components/UserSelectTable'
+  import DeptTable from './components/DeptSelectTable'
   import {
     getImportPreviewList,
     uploadImportExcel,
@@ -130,18 +156,23 @@
 
   export default {
     name: 'ClueImport',
-    components: { Edit },
+    components: { UserTable, DeptTable },
     data() {
       return {
         list: null,
+        total: 0,
         errorNum: 0, // 失败个数
         successNum: 0, // 成功个数
-        uploadDisable: false,
-        importDisable: false,
-        listLoading: false,
+        uploadDisable: false, // 上传按钮是否隐藏
+        importDisable: false, // 导入按钮是否隐藏
+        listLoading: false, // 是否显示列表加载框
+        showDialog: true, // 是否显示抽屉
+        importType: 0, // 导入类型
         layout: 'total, sizes, prev, pager, next, jumper',
-        total: 0,
         elementLoadingText: '正在加载...',
+        importPoolCode: 1, // 导入公海
+        importDeptCode: 2, // 平均分配部门
+        importUserCode: 3, // 指定人员分配
         queryForm: {
           page: 1,
           size: 10,
@@ -200,6 +231,9 @@
           this.importDisable = true
         })
       },
+      dialogVisible() {
+        this.showDialog = false
+      },
       handleSizeChange(val) {
         this.queryForm.pageSize = val
         this.fetchData()
@@ -251,6 +285,10 @@
       display: flex;
       justify-content: right;
     }
+  }
+
+  #drawer-content {
+    padding-left: 20px;
   }
 
   ::v-deep .cell {

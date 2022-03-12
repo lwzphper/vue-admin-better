@@ -138,13 +138,7 @@
     beforeDestroy() {
       document.body.style.overflow = 'auto'
     },
-    mounted() {
-      // this.form.username = 'admin'
-      // this.form.password = '123456'
-      // setTimeout(() => {
-      //   this.handleLogin()
-      // }, 3000)
-    },
+    mounted() {},
     methods: {
       handlePassword() {
         this.passwordType === 'password'
@@ -165,6 +159,7 @@
                   this.redirect === '/404' || this.redirect === '/401'
                     ? '/'
                     : this.redirect
+
                 this.$router.push(routerPath).catch(() => {})
                 this.loading = false
               })
