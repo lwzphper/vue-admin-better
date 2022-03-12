@@ -28,8 +28,7 @@ const dayjs = require('dayjs')
 const date = dayjs().format('YYYY_M_D')
 const time = dayjs().format('YYYY-M-D HH:mm:ss')
 process.env.VUE_APP_TITLE = title || '管理后台'
-process.env.VUE_APP_AUTHOR =
-  author || 'https://gitee.com/chu1204505056/vue-admin-better'
+process.env.VUE_APP_AUTHOR = author || ''
 process.env.VUE_APP_UPDATE_TIME = time
 process.env.VUE_APP_VERSION = version
 
@@ -49,11 +48,17 @@ module.exports = {
   devServer: {
     hot: true,
     port: devPort,
-    open: true,
+    open: true, // vue项目启动时自动打开浏览器
     noInfo: false,
     overlay: {
       warnings: true,
       errors: true,
+    },
+    proxy: {
+      '/': {
+        target: 'http://scrm.test.com',
+        changeOrigin: true,
+      },
     },
     after: mockServer(),
   },

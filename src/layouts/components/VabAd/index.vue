@@ -16,7 +16,6 @@
   </div>
 </template>
 <script>
-  import { getList } from '@/api/ad'
   export default {
     name: 'VabAd',
     data() {
@@ -25,15 +24,8 @@
         adList: [],
       }
     },
-    created() {
-      this.fetchData()
-    },
-    methods: {
-      async fetchData() {
-        const { data } = await getList()
-        this.adList = data
-      },
-    },
+    created() {},
+    methods: {},
   }
 </script>
 <style lang="scss" scoped>

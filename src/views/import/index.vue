@@ -1,5 +1,19 @@
 <template>
   <div class="userManagement-container">
+    <el-row class="upload-result-wrapper">
+      <el-col :span="8">
+        <p class="result-title">校验失败线索</p>
+        <p class="result-num">{{ errorNum }}个</p>
+      </el-col>
+      <el-col :span="8" class="success-box">
+        <p class="result-title">合计可导入</p>
+        <p class="result-num">{{ successNum }}个</p>
+      </el-col>
+      <el-col :span="8" class="result-button-wrapper">
+        <el-button @click="handleInitImport">取消导入</el-button>
+        <el-button type="primary" @click="handleImport">确认导入</el-button>
+      </el-col>
+    </el-row>
     <vab-query-form>
       <vab-query-form-right-panel :span="24">
         <el-form :inline="true" :model="queryForm" @submit.native.prevent>
@@ -33,7 +47,6 @@
       v-loading="listLoading"
       :data="list"
       :element-loading-text="elementLoadingText"
-      @selection-change="setSelectRows"
     >
       <el-table-column
         show-overflow-tooltip
@@ -80,7 +93,11 @@
 
 <script>
   import Edit from './components/ClueImportEdit'
-  import { getImportPreviewList, uploadImportExcel } from '@/api/clue'
+  import {
+    getImportPreviewList,
+    uploadImportExcel,
+    importExcelData,
+  } from '@/api/clue'
 
   export default {
     name: 'ClueImport',
@@ -88,10 +105,11 @@
     data() {
       return {
         list: null,
+        errorNum: 0, // 失败个数
+        successNum: 0, // 成功个数
         listLoading: false,
         layout: 'total, sizes, prev, pager, next, jumper',
         total: 0,
-        selectRows: '',
         elementLoadingText: '正在加载...',
         queryForm: {
           page: 1,
@@ -104,11 +122,8 @@
       // this.fetchData()
     },
     methods: {
-      setSelectRows(val) {
-        this.selectRows = val
-      },
+      // 上传文件
       handleUpload(param) {
-        // 上传
         let formData = new FormData()
         formData.append('excel_file', param.file)
         uploadImportExcel(formData).then((res) => {
@@ -117,6 +132,7 @@
           this.fetchData()
         })
       },
+      // 下载模板
       handleDownTpl() {
         const a = document.createElement('a')
         a.setAttribute('download', '导入模板.xlsx')
@@ -126,6 +142,25 @@
           'https://cdn-oss.kabel.work/clue/20220311/0b4a5c6e-9523-41b9-b557-88aed1e897f0.xlsx'
         )
         a.click()
+      },
+      // 初始化导入信息
+      handleInitImport() {
+        this.list = null
+        this.errorNum = 0
+        this.successNum = 0
+        this.total = 0
+        this.queryForm.file_path = ''
+      },
+      // 导入操作
+      handleImport() {
+        let data = {
+          file_path: this.queryForm.file_path,
+        }
+        importExcelData(data).then((res) => {
+          this.$message('操作成功')
+          // 初始化导入数据
+          this.handleInitImport()
+        })
       },
       handleSizeChange(val) {
         this.queryForm.pageSize = val
@@ -151,3 +186,29 @@
     },
   }
 </script>
+
+<style lang="scss" scoped>
+  .upload-result-wrapper {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: $base-color-default;
+    margin-bottom: 30px;
+
+    .success-box {
+      border-left: 1px solid $base-border-color;
+    }
+
+    .result-num {
+      margin: 0;
+      font-size: 20px;
+      padding-bottom: 10px;
+    }
+
+    .result-button-wrapper {
+      height: 100%;
+      display: flex;
+      justify-content: right;
+    }
+  }
+</style>
