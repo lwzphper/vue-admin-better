@@ -11,7 +11,13 @@
       </el-col>
       <el-col :span="8" class="result-button-wrapper">
         <el-button @click="handleInitImport">取消导入</el-button>
-        <el-button type="primary" @click="handleImport">确认导入</el-button>
+        <el-button
+          type="primary"
+          :disabled="importDisable"
+          @click="handleImport"
+        >
+          确认导入
+        </el-button>
       </el-col>
     </el-row>
     <vab-query-form>
@@ -33,6 +39,7 @@
               :show-file-list="false"
               :auto-upload="true"
               :http-request="handleUpload"
+              :disabled="uploadDisable"
             >
               <el-button icon="el-icon-upload" size="small" type="primary">
                 点击上传
@@ -50,33 +57,55 @@
     >
       <el-table-column
         show-overflow-tooltip
-        prop="id"
-        label="id"
+        prop="name"
+        label="姓名"
       ></el-table-column>
       <el-table-column
         show-overflow-tooltip
-        prop="username"
-        label="用户名"
+        prop="phone"
+        label="手机号"
       ></el-table-column>
       <el-table-column
         show-overflow-tooltip
-        prop="email"
-        label="邮箱"
+        prop="wechat"
+        label="微信号"
       ></el-table-column>
-
-      <el-table-column show-overflow-tooltip label="权限">
-        <template #default="{ row }">
-          <el-tag v-for="(item, index) in row.permissions" :key="index">
-            {{ item }}
-          </el-tag>
+      <el-table-column
+        show-overflow-tooltip
+        prop="region_name"
+        label="省市区"
+      ></el-table-column>
+      <el-table-column
+        show-overflow-tooltip
+        prop="address"
+        label="详细地址"
+      ></el-table-column>
+      <el-table-column
+        show-overflow-tooltip
+        prop="type_name"
+        label="线索类型"
+      ></el-table-column>
+      <el-table-column
+        show-overflow-tooltip
+        prop="source_name"
+        label="线索来源"
+      ></el-table-column>
+      <el-table-column
+        show-overflow-tooltip
+        prop="user_id"
+        label="用户id"
+      ></el-table-column>
+      <el-table-column show-overflow-tooltip prop="err_msg" label="验证结果">
+        <template slot-scope="scope">
+          <p
+            :class="
+              scope.row.err_msg == '' ? 'validate_success' : 'validate_error'
+            "
+          >
+            {{ scope.row.err_msg == '' ? '通过' : scope.row.err_msg }}
+          </p>
         </template>
       </el-table-column>
-
-      <el-table-column
-        show-overflow-tooltip
-        prop="datatime"
-        label="修改时间"
-      ></el-table-column>
     </el-table>
     <el-pagination
       background
@@ -107,6 +136,8 @@
         list: null,
         errorNum: 0, // 失败个数
         successNum: 0, // 成功个数
+        uploadDisable: false,
+        importDisable: false,
         listLoading: false,
         layout: 'total, sizes, prev, pager, next, jumper',
         total: 0,
@@ -124,12 +155,14 @@
     methods: {
       // 上传文件
       handleUpload(param) {
+        this.uploadDisable = true
         let formData = new FormData()
         formData.append('excel_file', param.file)
         uploadImportExcel(formData).then((res) => {
           // 设置文件路径
           this.queryForm.file_path = res.file_path
           this.fetchData()
+          this.uploadDisable = false
         })
       },
       // 下载模板
@@ -153,13 +186,18 @@
       },
       // 导入操作
       handleImport() {
+        this.importDisable = false
         let data = {
           file_path: this.queryForm.file_path,
         }
         importExcelData(data).then((res) => {
-          this.$message('操作成功')
+          this.$message({
+            message: '导入成功',
+            type: 'success',
+          })
           // 初始化导入数据
           this.handleInitImport()
+          this.importDisable = true
         })
       },
       handleSizeChange(val) {
@@ -176,9 +214,12 @@
       },
       async fetchData() {
         this.listLoading = true
-        const { list, count } = await getPreviewList(this.queryForm)
+        const { list, count, error } = await getImportPreviewList(
+          this.queryForm
+        )
         this.list = list
-        this.total = count
+        this.errorNum = error
+        this.successNum = count - error
         setTimeout(() => {
           this.listLoading = false
         }, 300)
@@ -209,6 +250,16 @@
       height: 100%;
       display: flex;
       justify-content: right;
+    }
+  }
+
+  ::v-deep .cell {
+    .validate_success {
+      color: $base-color-green !important;
+    }
+
+    .validate_error {
+      color: $base-color-red !important;
     }
   }
 </style>

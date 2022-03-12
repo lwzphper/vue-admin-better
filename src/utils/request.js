@@ -88,7 +88,7 @@ instance.interceptors.response.use(
       : [...[successCode]]
     // 是否操作正常
     if (codeVerificationArray.includes(code)) {
-      return data
+      return data.data
     } else {
       handleCode(code, msg)
       return Promise.reject(

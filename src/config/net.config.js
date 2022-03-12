@@ -7,7 +7,7 @@ const network = {
   //   process.env.NODE_ENV === 'development'
   //     ? 'vab-mock-server'
   //     : 'vab-mock-server',
-  baseURL: 'https://api.t.paiplus.cn',
+  baseURL: 'http://scrm.test.com',
   //配后端数据的接收方式application/json;charset=UTF-8或者application/x-www-form-urlencoded;charset=UTF-8
   contentType: 'application/json;charset=UTF-8',
   //消息框消失时间
@@ -17,7 +17,7 @@ const network = {
   //操作正常code，支持String、Array、int多种类型
   successCode: [200, 0],
   //登录失效code
-  invalidCode: 402,
+  invalidCode: 100,
   //无权限code
   noPermissionCode: 401,
 }

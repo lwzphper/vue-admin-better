@@ -21,11 +21,11 @@ export function uploadImportExcel(formData) {
  * @param {*} data
  * @returns
  */
-export function getImportPreviewList(data) {
+export function getImportPreviewList(params) {
   return request({
     url: '/manage/admin/clue/import/getPageList',
-    method: 'post',
-    data,
+    method: 'get',
+    params,
   })
 }
 
