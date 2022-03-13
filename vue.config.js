@@ -54,12 +54,6 @@ module.exports = {
       warnings: true,
       errors: true,
     },
-    proxy: {
-      '/': {
-        target: 'http://scrm.test.com',
-        changeOrigin: true,
-      },
-    },
     after: mockServer(),
   },
   configureWebpack() {
