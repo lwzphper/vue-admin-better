@@ -7,9 +7,9 @@ const network = {
   //   process.env.NODE_ENV === 'development'
   //     ? 'vab-mock-server'
   //     : 'vab-mock-server',
-  baseURL: 'http://scrm.test.com',
+  // baseURL: 'http://scrm.test.com',
   // baseURL: 'https://api.t.paiplus.cn',
-  // baseURL: 'https://api.paiplus.cn',
+  baseURL: 'https://api.paiplus.cn',
   // baseURL: process.env.BASE_URL,
   //配后端数据的接收方式application/json;charset=UTF-8或者application/x-www-form-urlencoded;charset=UTF-8
   contentType: 'application/json;charset=UTF-8',

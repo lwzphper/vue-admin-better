@@ -39,7 +39,7 @@ const mockServer = () => {
 }
 
 module.exports = {
-  publicPath,
+  publicPath: '',
   assetsDir,
   outputDir,
   lintOnSave,

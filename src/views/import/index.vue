@@ -207,7 +207,7 @@
         // a.setAttribute('target', '_blank')
         a.setAttribute(
           'href',
-          'https://cdn-oss.kabel.work/clue/20220311/0b4a5c6e-9523-41b9-b557-88aed1e897f0.xlsx'
+          'https://cdn-oss.kabel.work/clue/20220313/0d871b7d-5808-494c-9709-363a22661a83.xlsx'
         )
         a.click()
       },
