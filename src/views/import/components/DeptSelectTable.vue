@@ -23,7 +23,7 @@
     >
       <el-table-column label="选择" width="80">
         <template slot-scope="scope">
-          <el-radio v-model="selectId" :label="scope.row"><i></i></el-radio>
+          <el-radio v-model="selectId" :label="scope.row.id"><i></i></el-radio>
         </template>
       </el-table-column>
       <el-table-column prop="id" label="ID"></el-table-column>

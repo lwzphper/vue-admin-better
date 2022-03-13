@@ -11,13 +11,7 @@
       </el-col>
       <el-col :span="8" class="result-button-wrapper">
         <el-button @click="handleInitImport">取消导入</el-button>
-        <el-button
-          type="primary"
-          :disabled="importDisable"
-          @click="handleImport"
-        >
-          确认导入
-        </el-button>
+        <el-button type="primary" @click="showDialog">确认导入</el-button>
       </el-col>
     </el-row>
     <vab-query-form>
@@ -50,7 +44,7 @@
       </vab-query-form-right-panel>
     </vab-query-form>
 
-    <el-dialog title="导入选项" :visible.sync="showDialog">
+    <el-dialog title="导入选项" :visible.sync="dialogVisible">
       <div id="drawer-content">
         <el-radio-group v-model="importType">
           <el-radio :label="importPoolCode">导入到公海</el-radio>
@@ -69,8 +63,12 @@
         ref="deptTable"
       ></dept-table>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">
+        <el-button @click="showDialog">取 消</el-button>
+        <el-button
+          type="primary"
+          :disabled="importDisable"
+          @click="handleImport"
+        >
           确 定
         </el-button>
       </span>
@@ -166,13 +164,13 @@
         uploadDisable: false, // 上传按钮是否隐藏
         importDisable: false, // 导入按钮是否隐藏
         listLoading: false, // 是否显示列表加载框
-        showDialog: true, // 是否显示抽屉
+        dialogVisible: false, // 是否显示弹框
         importType: 0, // 导入类型
         layout: 'total, sizes, prev, pager, next, jumper',
         elementLoadingText: '正在加载...',
         importPoolCode: 1, // 导入公海
-        importDeptCode: 2, // 平均分配部门
-        importUserCode: 3, // 指定人员分配
+        importUserCode: 2, // 指定人员分配
+        importDeptCode: 3, // 平均分配部门
         queryForm: {
           page: 1,
           size: 10,
@@ -186,15 +184,22 @@
     methods: {
       // 上传文件
       handleUpload(param) {
+        this.handleInitImport()
         this.uploadDisable = true
         let formData = new FormData()
         formData.append('excel_file', param.file)
-        uploadImportExcel(formData).then((res) => {
-          // 设置文件路径
-          this.queryForm.file_path = res.file_path
-          this.fetchData()
-          this.uploadDisable = false
-        })
+
+        // todo 这里如果第一次文件上传失败，后面都不能上传
+        uploadImportExcel(formData)
+          .then((res) => {
+            // 设置文件路径
+            this.queryForm.file_path = res.file_path
+            this.fetchData()
+            this.uploadDisable = false
+          })
+          .catch(() => {
+            this.uploadDisable = false
+          })
       },
       // 下载模板
       handleDownTpl() {
@@ -217,22 +222,88 @@
       },
       // 导入操作
       handleImport() {
-        this.importDisable = false
+        data = this.getImportParams()
+        if (data === false) {
+          return
+        }
+
+        this.importDisable = true
+        importExcelData(data)
+          .then((res) => {
+            this.$message({
+              message: '导入成功',
+              type: 'success',
+            })
+            // 初始化导入数据
+            this.handleInitImport()
+          })
+          .catch(() => {
+            this.importDisable = false
+          })
+      },
+      getImportParams() {
         let data = {
           file_path: this.queryForm.file_path,
+          type: this.importType,
         }
-        importExcelData(data).then((res) => {
+
+        // 检查导入类型是否有选择
+        if (!this.importType) {
           this.$message({
-            message: '导入成功',
-            type: 'success',
+            message: '请选择导入类型',
+            type: 'error',
           })
-          // 初始化导入数据
-          this.handleInitImport()
-          this.importDisable = true
-        })
+          return false
+        }
+
+        // 获取导入的类型
+        let objId = null
+        switch (this.importType) {
+          case this.importUserCode:
+            objId = this.$refs.userTable.selectId
+            if (!objId) {
+              this.$message({
+                message: '请选择分配的人员',
+                type: 'error',
+              })
+              return false
+            }
+            data.obj_id = objId
+            break
+          case this.importDeptCode:
+            objId = this.$refs.deptTable.selectId
+            if (!objId) {
+              this.$message({
+                message: '请选择分配的部门',
+                type: 'error',
+              })
+              return false
+            }
+            data.obj_id = objId
+        }
+        return data
       },
-      dialogVisible() {
-        this.showDialog = false
+      // 显示弹框
+      showDialog() {
+        if (this.queryForm.file_path === '') {
+          this.$message({
+            message: '请上传需要导入的Excel文件',
+            type: 'error',
+          })
+          return
+        }
+
+        // 判断可以导入的数量
+        if (this.successNum == 0) {
+          this.$message({
+            message: '没有可导入的数据',
+            type: 'error',
+          })
+          return false
+        }
+
+        // 显示弹框
+        this.dialogVisible = true
       },
       handleSizeChange(val) {
         this.queryForm.pageSize = val
