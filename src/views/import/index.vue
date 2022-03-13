@@ -44,7 +44,11 @@
       </vab-query-form-right-panel>
     </vab-query-form>
 
-    <el-dialog title="导入选项" :visible.sync="dialogVisible">
+    <el-dialog
+      title="导入选项"
+      :visible.sync="dialogVisible"
+      :close-on-click-modal="false"
+    >
       <div id="drawer-content">
         <el-radio-group v-model="importType">
           <el-radio :label="importPoolCode">导入到公海</el-radio>
@@ -113,11 +117,6 @@
         show-overflow-tooltip
         prop="source_name"
         label="线索来源"
-      ></el-table-column>
-      <el-table-column
-        show-overflow-tooltip
-        prop="user_id"
-        label="用户id"
       ></el-table-column>
       <el-table-column show-overflow-tooltip prop="err_msg" label="验证结果">
         <template slot-scope="scope">
@@ -219,10 +218,12 @@
         this.successNum = 0
         this.total = 0
         this.queryForm.file_path = ''
+        this.importDisable = false
+        this.dialogVisible = false
       },
       // 导入操作
       handleImport() {
-        data = this.getImportParams()
+        let data = this.getImportParams()
         if (data === false) {
           return
         }
