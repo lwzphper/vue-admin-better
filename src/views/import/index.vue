@@ -324,6 +324,7 @@
           this.queryForm
         )
         this.list = list
+        this.total = count
         this.errorNum = error
         this.successNum = count - error
         setTimeout(() => {
