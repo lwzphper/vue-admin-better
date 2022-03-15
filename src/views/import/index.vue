@@ -307,6 +307,9 @@
         // 显示弹框
         this.dialogVisible = true
       },
+      hideDialog() {
+        this.dialogVisible = false
+      },
       handleSizeChange(val) {
         this.queryForm.pageSize = val
         this.fetchData()
