@@ -134,6 +134,7 @@
       background
       :current-page="queryForm.pageNo"
       :page-size="queryForm.pageSize"
+      :page-sizes="[10]"
       :layout="layout"
       :total="total"
       @size-change="handleSizeChange"
@@ -165,7 +166,7 @@
         listLoading: false, // 是否显示列表加载框
         dialogVisible: false, // 是否显示弹框
         importType: 0, // 导入类型
-        layout: 'total, sizes, prev, pager, next, jumper',
+        layout: 'total, prev, pager, next, jumper',
         elementLoadingText: '正在加载...',
         importPoolCode: 1, // 导入公海
         importUserCode: 2, // 指定人员分配
