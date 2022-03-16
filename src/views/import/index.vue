@@ -67,7 +67,7 @@
         ref="deptTable"
       ></dept-table>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="showDialog">取 消</el-button>
+        <el-button @click="hideDialog">取 消</el-button>
         <el-button
           type="primary"
           :disabled="importDisable"
