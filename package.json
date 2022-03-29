@@ -9,8 +9,8 @@
   },
   "scripts": {
     "serve": "vue-cli-service serve",
-    "serve-local": "vue-cli-service serve --mode local",
-    "serve-test": "vue-cli-service serve --mode test",
+    "serve-local": "vue-cli-service serve uni-build --mode local",
+    "serve-test": "vue-cli-service serve uni-build --mode test",
     "build": "vue-cli-service build",
     "build:report": "vue-cli-service build --report",
     "globle": "npm install -g cnpm --registry=https://registry.npmmirror.com&&cnpm i rimraf npm-check-updates nrm -g&&rimraf node_modules&&cnpm i",
