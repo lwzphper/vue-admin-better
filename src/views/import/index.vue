@@ -50,6 +50,10 @@
       :close-on-click-modal="false"
     >
       <div id="drawer-content">
+        <p class="tips">
+          ps: tob线索按照内部策略匹配指派人。根据策略匹配不到指派人的 tob线索
+          和全部 toc线索 将按照下面所选规则进行指派。
+        </p>
         <el-radio-group v-model="importType">
           <el-radio :label="importPoolCode">导入到公海</el-radio>
           <el-radio :label="importUserCode">指定人员分配</el-radio>
@@ -366,6 +370,10 @@
 
   #drawer-content {
     padding-left: 20px;
+    .tips {
+      color: $base-color-red;
+      margin-top: 0;
+    }
   }
 
   ::v-deep .cell {

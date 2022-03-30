@@ -1,5 +1,4 @@
 import request from '@/utils/request'
-import { loginRSA, tokenName } from '@/config'
 
 /**
  * 上传导入的excel表格

@@ -24,6 +24,7 @@ const state = () => ({
 const getters = {
   accessToken: (state) => state.accessToken,
   username: (state) => state.username,
+  companyInfo: (state) => state.companyInfo,
   avatar: (state) => state.avatar,
   permissions: (state) => state.permissions,
 }
@@ -34,6 +35,9 @@ const mutations = {
   },
   setUsername(state, username) {
     state.username = username
+  },
+  setCompanyInfo(state, companyInfo) {
+    state.companyInfo = companyInfo
   },
   setAvatar(state, avatar) {
     state.avatar = avatar
@@ -72,11 +76,25 @@ const actions = {
       )
     }
   },
+  async setUserInfo({ commit }, data) {
+    const accessToken = data[apiResponseTokenName]
+    if (accessToken) {
+      commit('setAccessToken', accessToken)
+      // 设置用户信息
+      setUserInfo(data['user'])
+    } else {
+      Vue.prototype.$baseMessage(
+        `登录接口异常，未正确返回${apiResponseTokenName}...`,
+        'error'
+      )
+    }
+  },
   async getUserInfo({ commit, state }) {
     let userInfo = getUserInfo()
     let permissions = ['admin', 'editor']
     commit('setPermissions', permissions)
     commit('setUsername', userInfo['name'])
+    commit('setCompanyInfo', userInfo['company'])
     commit('setAvatar', [])
     return permissions
     // const { data } = await getUserInfo(state.accessToken)

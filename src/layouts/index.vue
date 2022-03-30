@@ -40,7 +40,7 @@
       <vab-side-bar />
       <div class="vab-main" :class="collapse ? 'is-collapse-main' : ''">
         <div :class="header === 'fixed' ? 'fixed-header' : ''">
-          <vab-nav-bar />
+          <vab-nav-bar></vab-nav-bar>
           <vab-tabs-bar v-if="tabsBar === 'true' || tabsBar === true" />
         </div>
         <vab-ad />
@@ -48,16 +48,44 @@
       </div>
     </div>
     <el-backtop />
+    <el-dialog title="切换企业" :visible.sync="showSwitchTab" width="40%">
+      <el-form label-width="80px" :model="switchCompanyForm">
+        <el-radio-group v-model="switchCompanyForm.company_id">
+          <el-form-item v-for="item in companyList" :key="item.id">
+            <el-radio :label="item.id">{{ item.name }}</el-radio>
+          </el-form-item>
+        </el-radio-group>
+        <el-form-item>
+          <el-button type="primary" @click="handleSwitchCompany">
+            提交
+          </el-button>
+          <el-button @click="showSwitchTab = false">取消</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
 <script>
   import { mapActions, mapGetters } from 'vuex'
   import { tokenName } from '@/config'
+  import { switchList, handleSwitch } from '@/api/company'
   export default {
     name: 'Layout',
+    provide() {
+      return {
+        showSwitchTab: this.handleShowSwitchTab,
+      }
+    },
     data() {
-      return { oldLayout: '' }
+      return {
+        oldLayout: '',
+        showSwitchTab: false,
+        switchCompanyForm: {
+          company_id: 0,
+        },
+        companyList: {},
+      }
     },
     computed: {
       ...mapGetters({
@@ -66,6 +94,7 @@
         collapse: 'settings/collapse',
         header: 'settings/header',
         device: 'settings/device',
+        companyInfo: 'user/companyInfo',
       }),
       classObj() {
         return {
@@ -134,6 +163,45 @@
             isMobile ? 'mobile' : 'desktop'
           )
         }
+      },
+      handleShowSwitchTab() {
+        this.showSwitchTab = true
+        // 获取企业列表
+        switchList().then((data) => {
+          this.companyList = data
+          // 设置默认的企业id
+          this.switchCompanyForm.company_id = this.companyInfo['id']
+        })
+      },
+      handleHideSwitchTab() {
+        this.showSwitchTab = false
+      },
+      handleSwitchCompany() {
+        // 如果选择的企业id 跟 当前企业id 一样，就不做操作
+        if (this.switchCompanyForm.company_id == this.companyInfo['id']) {
+          this.handleHideSwitchTab()
+          return
+        }
+
+        handleSwitch(this.switchCompanyForm).then((res) => {
+          this.$store
+            .dispatch('user/setUserInfo', res)
+            .then(() => {
+              this.handleHideSwitchTab()
+              const routerPath =
+                this.redirect === '/404' || this.redirect === '/401'
+                  ? '/'
+                  : this.redirect
+
+              this.$router.push(routerPath).catch(() => {})
+              this.loading = false
+              // 重新加载页码
+              location.reload()
+            })
+            .catch(() => {
+              this.loading = false
+            })
+        })
       },
     },
   }
