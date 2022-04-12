@@ -45,24 +45,21 @@
     </vab-query-form>
 
     <el-dialog
-      title="导入选项"
+      :title="'导入选项（共' + total + '条线索）'"
       :visible.sync="dialogVisible"
       :close-on-click-modal="false"
     >
       <div id="drawer-content">
-        <p class="tips">
-          ps: tob线索按照内部策略匹配指派人。根据策略匹配不到指派人的 tob线索
-          和全部 toc线索 将按照下面所选规则进行指派。
-        </p>
         <el-radio-group v-model="importType">
           <el-radio :label="importPoolCode">导入到公海</el-radio>
           <el-radio :label="importUserCode">指定人员分配</el-radio>
           <el-radio :label="importDeptCode">平均分配给部门</el-radio>
+          <el-radio :label="importRegionPolicy">按照策略分配</el-radio>
         </el-radio-group>
       </div>
       <!-- 人员列表 -->
       <user-table
-        v-show="importType == importUserCode"
+        v-show="userTabCode.indexOf(importType) != -1"
         ref="userTable"
       ></user-table>
       <!-- 部门列表 -->
@@ -133,6 +130,11 @@
           </p>
         </template>
       </el-table-column>
+      <el-table-column
+        show-overflow-tooltip
+        prop="rp_username"
+        label="策略分配人"
+      ></el-table-column>
     </el-table>
     <el-pagination
       background
@@ -156,6 +158,11 @@
     importExcelData,
   } from '@/api/clue'
 
+  let importPoolCode = 1 // 导入公海
+  let importUserCode = 2 // 指定人员分配
+  let importDeptCode = 3 // 平均分配部门
+  let importRegionPolicy = 4 // 按照策略分配
+
   export default {
     name: 'ClueImport',
     components: { UserTable, DeptTable },
@@ -172,9 +179,11 @@
         importType: 0, // 导入类型
         layout: 'total, prev, pager, next, jumper',
         elementLoadingText: '正在加载...',
-        importPoolCode: 1, // 导入公海
-        importUserCode: 2, // 指定人员分配
-        importDeptCode: 3, // 平均分配部门
+        importPoolCode: importPoolCode, // 导入公海
+        importUserCode: importUserCode, // 指定人员分配
+        importDeptCode: importDeptCode, // 平均分配部门
+        importRegionPolicy: importRegionPolicy, // 按照策略分配
+        userTabCode: [importUserCode, importRegionPolicy], // 需要选择人员的类型
         queryForm: {
           page: 1,
           size: 10,
@@ -266,6 +275,7 @@
         let objId = null
         switch (this.importType) {
           case this.importUserCode:
+          case this.importRegionPolicy:
             objId = this.$refs.userTable.selectId
             if (!objId) {
               this.$message({
