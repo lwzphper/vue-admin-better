@@ -54,12 +54,14 @@
           <el-radio :label="importPoolCode">导入到公海</el-radio>
           <el-radio :label="importUserCode">指定人员分配</el-radio>
           <el-radio :label="importDeptCode">平均分配给部门</el-radio>
-          <el-radio :label="importRegionPolicy">按照策略分配</el-radio>
+          <el-radio v-if="checkIsBrand()" :label="importRegionPolicy">
+            按照策略分配
+          </el-radio>
         </el-radio-group>
       </div>
       <!-- 人员列表 -->
       <user-table
-        v-show="userTabCode.indexOf(importType) != -1"
+        v-show="checkIsBrand() && userTabCode.indexOf(importType) != -1"
         ref="userTable"
       ></user-table>
       <!-- 部门列表 -->
@@ -131,6 +133,7 @@
         </template>
       </el-table-column>
       <el-table-column
+        v-if="checkIsBrand()"
         show-overflow-tooltip
         prop="rp_username"
         label="策略分配人"
@@ -152,6 +155,8 @@
 <script>
   import UserTable from './components/UserSelectTable'
   import DeptTable from './components/DeptSelectTable'
+  import { mapGetters } from 'vuex'
+  import { systemConst } from '@/config/const'
   import {
     getImportPreviewList,
     uploadImportExcel,
@@ -191,10 +196,19 @@
         },
       }
     },
+    computed: {
+      ...mapGetters({
+        companyInfo: 'user/companyInfo',
+      }),
+    },
     created() {
       // this.fetchData()
     },
     methods: {
+      // 检查是否品牌商
+      checkIsBrand() {
+        return this.companyInfo['type'] == systemConst.typeBrand
+      },
       // 上传文件
       handleUpload(param) {
         this.handleInitImport()
